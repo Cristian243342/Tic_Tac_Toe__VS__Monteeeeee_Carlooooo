@@ -8,7 +8,7 @@
 
 #include "struct.h"
 
-#define SIMS_DEPTH 5000
+#define SIMS_DEPTH 3000
 #define C sqrt(2)
 
 // Returns -1 is 0 wins, 0 if it's a tie, 1 if X wins, or 2 if the game isn't
@@ -43,24 +43,20 @@ int8_t game_is_over(int8_t **table) {
 mc_node_t *next_expansion(mc_node_t *node);
 
 // Clears the node of temporary "3" values;
-void clean_node (mc_node_t *node)
-{
+void clean_node(mc_node_t *node) {
   for (int i = 0; i < 3; i++)
     for (int j = 0; j < 3; j++)
-      if (node->image[i][j] == 3)
-        node->image[i][j] = 0;
+      if (node->image[i][j] == 3) node->image[i][j] = 0;
 }
 
 // Determines the maximum selection value.
 double find_max(mc_node_t *node, uint64_t i) {
-  if (game_is_over(node->image) != 2)
-    return -10;
+  if (game_is_over(node->image) != 2) return -10;
   double max, tmp_max;
   node->value = (double)node->wins / node->sims + C * sqrt(log(i) / node->sims);
   max = node->value;
   // Checks if the node can be expanded.
-  if (node->max_children == node->child_nr)
-    max = -10;
+  if (node->max_children == node->child_nr) max = -10;
 
   list_t *curr = node->child_list;
   for (; curr; curr = curr->next) {
@@ -72,10 +68,8 @@ double find_max(mc_node_t *node, uint64_t i) {
 
 // Finds the selected node.
 mc_node_t *select_node(mc_node_t *node, double max) {
-  if (game_is_over(node->image) != 2)
-    return NULL;
-  if (max == node->value && node->max_children != node->child_nr)
-    return node;
+  if (game_is_over(node->image) != 2) return NULL;
+  if (max == node->value && node->max_children != node->child_nr) return node;
   mc_node_t *ret;
   list_t *curr = node->child_list;
   for (; curr; curr = curr->next) {
@@ -88,7 +82,6 @@ mc_node_t *select_node(mc_node_t *node, double max) {
 
 // Makes an expedition (aka. makes a random move)
 mc_node_t *next_expansion(mc_node_t *node) {
-
   // Creates a new node
   mc_node_t *new_node = malloc(sizeof(mc_node_t));
   int8_t i, tmp = node->child_nr;
@@ -275,11 +268,34 @@ int8_t simulate(mc_node_t *head, int8_t start_turn) {
     turn = -1;
   else
     turn = 0;
-  
-  for (int8_t i = 0; i < 3; i++)
-    free(table[i]);
+
+  for (int8_t i = 0; i < 3; i++) free(table[i]);
   free(table);
   return turn;
+}
+
+void free_tree(mc_node_t *node) {
+  list_t *child = node->child_list;
+  if (child)
+    for (; child->next; child = child->next) {
+      free_tree(child->data);
+      if (child->prev) {
+        free(child->prev);
+      }
+    }
+
+  if (child) {
+    if (child->prev) {
+      free(child->prev);
+    }
+    free_tree(child->data);
+    free(child);
+  }
+
+  int i = 0;
+  for (; i < 3; i++) free(node->image[i]);
+  free(node->image);
+  free(node);
 }
 
 int main(void) {
@@ -289,7 +305,8 @@ int main(void) {
   // Allocate the head of the tree
   mc_node_t *tree_head = malloc(sizeof(mc_node_t));
   tree_head->image = calloc(3, sizeof(int8_t *));
-  for (int8_t i = 0; i < 3; i++) tree_head->image[i] = calloc(3, sizeof(int8_t));
+  for (int8_t i = 0; i < 3; i++)
+    tree_head->image[i] = calloc(3, sizeof(int8_t));
 
   int8_t start_turn, line, col, rez;
   scanf("%hhd", &start_turn);  // 1-player ; -1-ai
@@ -328,7 +345,7 @@ int main(void) {
       // Checks if the tree is unpopulated (aka. first move)
       if (!tree_head->child_list) {
         // Checks if the tree head is a terminal node
-        //if (game_is_over(tree_head->image) != 2) break;
+        // if (game_is_over(tree_head->image) != 2) break;
         node = tree_head;
       } else {
         // Selects the best node from which to expand
@@ -347,8 +364,7 @@ int main(void) {
       // Find the maximum number of children the new node can have.
       for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
-          if (!new_node->image[i][j])
-            new_node->max_children++;
+          if (!new_node->image[i][j]) new_node->max_children++;
 
       list_t *n_ll_node = malloc(sizeof(list_t));
       // Populates a list_t with the new node and places it at the start of the
@@ -430,10 +446,27 @@ int main(void) {
       tree_head = curr->data;
       tree_head->parent = NULL;
     } else {
+      curr = tree_head->child_list;
+      if (curr)
+        for (; curr->next; curr = curr->next) {
+          free_tree(curr->data);
+          if (curr->prev) {
+            free(curr->prev);
+          }
+        }
+
+      if (curr) {
+        if (curr->prev) {
+          free(curr->prev);
+        }
+        free_tree(curr->data);
+        free(curr);
+      }
       tree_head->child_list = NULL;
     }
   }
 
-  printf("Game was won by: %hhd", game_is_over(tree_head->image));
+  printf("Game was won by: %hhd\n", game_is_over(tree_head->image));
+  free_tree(true_head);
   return 0;
 }
