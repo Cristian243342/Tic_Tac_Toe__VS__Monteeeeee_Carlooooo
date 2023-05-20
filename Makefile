@@ -11,15 +11,15 @@ EXEC = monte
 build: $(DEPS) clean_sys $(EXEC)
 
 $(EXEC): $(OBJ)
-	$(CC) -g -O3 -o $@ $^ $(CFLAGS) -lm
+	$(CC) -g -o $@ $^ $(CFLAGS) -lm
 
 %.o: %.c
-	$(CC) -g -c -O3 -o $@ $< $(CFLAGS) -lm
+	$(CC) -g -c -o $@ $< $(CFLAGS) -lm
 
 build_sys: $(DEPS) clean_build sys_$(EXEC)
 
 sys_$(EXEC): $(OBJ1)
-	$(CC) -g -O3 -o $(EXEC) $^ $(CFLAGS) -lm
+	$(CC) -g -o $(EXEC) $^ $(CFLAGS) -lm
 
 run:
 	./$(EXEC)

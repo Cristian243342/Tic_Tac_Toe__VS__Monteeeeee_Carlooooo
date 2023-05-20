@@ -8,7 +8,7 @@
 
 #include "struct.h"
 
-#define SIMS_DEPTH 3000
+#define SIMS_DEPTH 10000
 #define C sqrt(2)
 
 // Returns -1 is 0 wins, 0 if it's a tie, 1 if X wins, or 2 if the game isn't
@@ -100,132 +100,141 @@ mc_node_t *next_expansion(mc_node_t *node) {
     memcpy(new_node->image[i], node->image[i], 3);
   }
 
+  uint8_t r = rand() % 9;
+  uint8_t count_i = 3, count_j;
+  for (uint8_t i = r / 3; count_i; i = (i + 1) % 3, count_i--)
+    for (uint8_t j = r % 3, count_j = 3; count_j; j = (j + 1) % 3, count_j--)
+      if (new_node->image[i][j] == 0) {
+        new_node->image[i][j] = node->turn;
+        return new_node;
+      }
+
   // Finds a new expansion.
-  int8_t nr_tang = 0;
-  if (!new_node->image[1][1]) {
-    for (i = 0; i < 3; i += 2) {
-      if (new_node->image[i][1] == node->turn) nr_tang++;
-      if (new_node->image[1][i] == node->turn) nr_tang++;
-    }
-    if (nr_tang >= 2) {
-      if (!tmp) {
-        new_node->image[1][1] = node->turn;
-        return new_node;
-      }
-      new_node->image[1][1] = 3;
-      tmp--;
-    }
-  }
+  // int8_t nr_tang = 0;
+  // if (!new_node->image[1][1]) {
+  //   for (i = 0; i < 3; i += 2) {
+  //     if (new_node->image[i][1] == node->turn) nr_tang++;
+  //     if (new_node->image[1][i] == node->turn) nr_tang++;
+  //   }
+  //   if (nr_tang >= 2) {
+  //     if (!tmp) {
+  //       new_node->image[1][1] = node->turn;
+  //       return new_node;
+  //     }
+  //     new_node->image[1][1] = 3;
+  //     tmp--;
+  //   }
+  // }
 
-  for (i = 0; i < 3; i += 2) {
-    // Checks if the is a more valuable h/b margin position.
-    nr_tang = 0;
-    if (!new_node->image[i][1]) {
-      if (new_node->image[i][0] == node->turn) nr_tang++;
-      if (new_node->image[i][2] == node->turn) nr_tang++;
-      if (new_node->image[1][1] == node->turn) nr_tang++;
-      if (nr_tang >= 2) {
-        if (!tmp) {
-          new_node->image[i][1] = node->turn;
-          return new_node;
-        }
-        new_node->image[i][1] = 3;
-        tmp--;
-      }
-    }
+  // for (i = 0; i < 3; i += 2) {
+  //   // Checks if the is a more valuable h/b margin position.
+  //   nr_tang = 0;
+  //   if (!new_node->image[i][1]) {
+  //     if (new_node->image[i][0] == node->turn) nr_tang++;
+  //     if (new_node->image[i][2] == node->turn) nr_tang++;
+  //     if (new_node->image[1][1] == node->turn) nr_tang++;
+  //     if (nr_tang >= 2) {
+  //       if (!tmp) {
+  //         new_node->image[i][1] = node->turn;
+  //         return new_node;
+  //       }
+  //       new_node->image[i][1] = 3;
+  //       tmp--;
+  //     }
+  //   }
 
-    // Checks if there is a more valuable side placement.
-    nr_tang = 0;
-    if (!new_node->image[1][i]) {
-      if (new_node->image[0][i] == node->turn) nr_tang++;
-      if (new_node->image[2][i] == node->turn) nr_tang++;
-      if (new_node->image[1][1] == node->turn) nr_tang++;
-      if (nr_tang >= 2) {
-        if (!tmp) {
-          new_node->image[1][i] = node->turn;
-          return new_node;
-        }
-        new_node->image[1][i] = 3;
-        tmp--;
-      }
-    }
-  }
+  //   // Checks if there is a more valuable side placement.
+  //   nr_tang = 0;
+  //   if (!new_node->image[1][i]) {
+  //     if (new_node->image[0][i] == node->turn) nr_tang++;
+  //     if (new_node->image[2][i] == node->turn) nr_tang++;
+  //     if (new_node->image[1][1] == node->turn) nr_tang++;
+  //     if (nr_tang >= 2) {
+  //       if (!tmp) {
+  //         new_node->image[1][i] = node->turn;
+  //         return new_node;
+  //       }
+  //       new_node->image[1][i] = 3;
+  //       tmp--;
+  //     }
+  //   }
+  // }
 
-  for (i = 0; i < 3; i += 2) {
-    // Checks it there is a more valuable top corner node.
-    nr_tang = 0;
-    if (!new_node->image[0][i]) {
-      if (new_node->image[1][i] == node->turn) nr_tang++;
-      if (new_node->image[0][1] == node->turn) nr_tang++;
-      if (nr_tang >= 1) {
-        if (!tmp) {
-          new_node->image[0][i] = node->turn;
-          return new_node;
-        }
-        new_node->image[0][i] = 3;
-        tmp--;
-      }
-    }
+  // for (i = 0; i < 3; i += 2) {
+  //   // Checks it there is a more valuable top corner node.
+  //   nr_tang = 0;
+  //   if (!new_node->image[0][i]) {
+  //     if (new_node->image[1][i] == node->turn) nr_tang++;
+  //     if (new_node->image[0][1] == node->turn) nr_tang++;
+  //     if (nr_tang >= 1) {
+  //       if (!tmp) {
+  //         new_node->image[0][i] = node->turn;
+  //         return new_node;
+  //       }
+  //       new_node->image[0][i] = 3;
+  //       tmp--;
+  //     }
+  //   }
 
-    // Checks if there is a more valuable bottom corner node.
-    nr_tang = 0;
-    if (!new_node->image[2][i]) {
-      if (new_node->image[1][i] == node->turn) nr_tang++;
-      if (new_node->image[2][1] == node->turn) nr_tang++;
-      if (nr_tang >= 1) {
-        if (!tmp) {
-          new_node->image[2][i] = node->turn;
-          return new_node;
-        }
-        new_node->image[2][i] = 3;
-        tmp--;
-      }
-    }
-  }
+  //   // Checks if there is a more valuable bottom corner node.
+  //   nr_tang = 0;
+  //   if (!new_node->image[2][i]) {
+  //     if (new_node->image[1][i] == node->turn) nr_tang++;
+  //     if (new_node->image[2][1] == node->turn) nr_tang++;
+  //     if (nr_tang >= 1) {
+  //       if (!tmp) {
+  //         new_node->image[2][i] = node->turn;
+  //         return new_node;
+  //       }
+  //       new_node->image[2][i] = 3;
+  //       tmp--;
+  //     }
+  //   }
+  // }
 
-  if (!new_node->image[1][1]) {
-    if (!tmp) {
-      new_node->image[1][1] = node->turn;
-      return new_node;
-    }
-    tmp--;
-  }
+  // if (!new_node->image[1][1]) {
+  //   if (!tmp) {
+  //     new_node->image[1][1] = node->turn;
+  //     return new_node;
+  //   }
+  //   tmp--;
+  // }
 
-  for (i = 0; i < 3; i += 2) {
-    if (!new_node->image[i][1]) {
-      if (!tmp) {
-        new_node->image[i][1] = node->turn;
-        return new_node;
-      }
-      tmp--;
-    }
+  // for (i = 0; i < 3; i += 2) {
+  //   if (!new_node->image[i][1]) {
+  //     if (!tmp) {
+  //       new_node->image[i][1] = node->turn;
+  //       return new_node;
+  //     }
+  //     tmp--;
+  //   }
 
-    if (!new_node->image[1][i]) {
-      if (!tmp) {
-        new_node->image[1][i] = node->turn;
-        return new_node;
-      }
-      tmp--;
-    }
-  }
+  //   if (!new_node->image[1][i]) {
+  //     if (!tmp) {
+  //       new_node->image[1][i] = node->turn;
+  //       return new_node;
+  //     }
+  //     tmp--;
+  //   }
+  // }
 
-  for (i = 0; i < 3; i += 2) {
-    if (!new_node->image[0][i]) {
-      if (!tmp) {
-        new_node->image[0][i] = node->turn;
-        return new_node;
-      }
-      tmp--;
-    }
+  // for (i = 0; i < 3; i += 2) {
+  //   if (!new_node->image[0][i]) {
+  //     if (!tmp) {
+  //       new_node->image[0][i] = node->turn;
+  //       return new_node;
+  //     }
+  //     tmp--;
+  //   }
 
-    if (!new_node->image[2][i]) {
-      if (!tmp) {
-        new_node->image[2][i] = node->turn;
-        return new_node;
-      }
-      tmp--;
-    }
-  }
+  //   if (!new_node->image[2][i]) {
+  //     if (!tmp) {
+  //       new_node->image[2][i] = node->turn;
+  //       return new_node;
+  //     }
+  //     tmp--;
+  //   }
+  // }
 
   return NULL;
 }
