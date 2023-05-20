@@ -85,7 +85,7 @@ mc_node_t *next_expansion(mc_node_t *node) {
   // Creates a new node
   mc_node_t *new_node = malloc(sizeof(mc_node_t));
   int8_t i, tmp = node->child_nr;
-
+  
   new_node->max_children = 0;
   new_node->value = 0;
   new_node->child_list = NULL;
@@ -101,7 +101,6 @@ mc_node_t *next_expansion(mc_node_t *node) {
   }
 
   // Finds a new expansion.
-  // Starts by checking the middle position.
   int8_t nr_tang = 0;
   if (!new_node->image[1][1]) {
     for (i = 0; i < 3; i += 2) {
