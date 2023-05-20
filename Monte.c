@@ -8,7 +8,7 @@
 
 #include "struct.h"
 
-#define SIMS_DEPTH 10000
+#define SIMS_DEPTH 1600
 #define C sqrt(2)
 
 // Returns -1 is 0 wins, 0 if it's a tie, 1 if X wins, or 2 if the game isn't
@@ -85,7 +85,7 @@ mc_node_t *next_expansion(mc_node_t *node) {
   // Creates a new node
   mc_node_t *new_node = malloc(sizeof(mc_node_t));
   int8_t i, tmp = node->child_nr;
-  
+
   new_node->max_children = 0;
   new_node->value = 0;
   new_node->child_list = NULL;
@@ -275,7 +275,7 @@ int8_t simulate(mc_node_t *head, int8_t start_turn) {
   else if (game_is_over(table) == start_turn)
     turn = -1;
   else
-    turn = 0;
+    turn = -1;
 
   for (int8_t i = 0; i < 3; i++) free(table[i]);
   free(table);
@@ -284,16 +284,10 @@ int8_t simulate(mc_node_t *head, int8_t start_turn) {
 
 void free_tree(mc_node_t *node) {
   list_t *child = node->child_list;
-  if (child)
-    for (; child->next; child = child->next) {
-      free_tree(child->data);
-      if (child->prev) {
-        free(child->prev);
-      }
-    }
-
   if (child) {
-    if (child->prev) {
+    for (node->child_nr--; node->child_nr > 0; node->child_nr--) {
+      child = child->next;
+      free_tree(child->prev->data);
       free(child->prev);
     }
     free_tree(child->data);
@@ -347,7 +341,7 @@ int main(void) {
   // Loop untill the game is finished
   while (game_is_over(tree_head->image) == 2) {
     mc_node_t *node, *new_node;
-    double max = 0;
+    double max = -10;
     int8_t i, j;
     for (uint32_t t = 2; t < SIMS_DEPTH + 2; t++) {
       // Checks if the tree is unpopulated (aka. first move)
@@ -368,7 +362,7 @@ int main(void) {
       // NULL node gets input in function
       new_node = next_expansion(node);
       node->child_nr += 1;
-      clean_node(new_node);
+      //clean_node(new_node);
       // Find the maximum number of children the new node can have.
       for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
@@ -380,6 +374,8 @@ int main(void) {
       n_ll_node->data = new_node;
       n_ll_node->next = node->child_list;
       n_ll_node->prev = NULL;
+      if (node->child_list)
+        node->child_list->prev = n_ll_node;
       node->child_list = n_ll_node;
 
       // Calculates the result of a random simulation from this board state
@@ -428,13 +424,6 @@ int main(void) {
         puts("Invalid position.");
         continue;
       }
-      tree_head->image[line][col] = start_turn;
-      tree_head->turn *= -1;
-      tree_head->child_nr = 0;
-      tree_head->wins = 0;
-      tree_head->sims = 0;
-      tree_head->parent = NULL;
-      tree_head->max_children--;
       break;
     }
 
@@ -454,23 +443,33 @@ int main(void) {
       tree_head = curr->data;
       tree_head->parent = NULL;
     } else {
-      curr = tree_head->child_list;
-      if (curr)
-        for (; curr->next; curr = curr->next) {
-          free_tree(curr->data);
-          if (curr->prev) {
-            free(curr->prev);
-          }
+      mc_node_t *nn_oo = malloc(sizeof(mc_node_t));
+      nn_oo->image = malloc(3 * sizeof(int8_t *));
+      for (i = 0; i < 3; i++) {
+        nn_oo->image[i] = malloc(3 * sizeof(int8_t));
+        for (j = 0; j < 3; j++) {
+          nn_oo->image[i][j] = tree_head->image[i][j];
         }
-
-      if (curr) {
-        if (curr->prev) {
-          free(curr->prev);
-        }
-        free_tree(curr->data);
-        free(curr);
       }
-      tree_head->child_list = NULL;
+      nn_oo->image[line][col] = start_turn;
+      nn_oo->turn = -start_turn;
+      nn_oo->child_nr = 0;
+      nn_oo->wins = 0;
+      nn_oo->sims = 0;
+      nn_oo->max_children = 9;
+      nn_oo->parent = NULL;
+      nn_oo->child_list = NULL;
+      nn_oo->max_children--;
+      tree_head->child_nr++;
+
+      list_t *n_l = malloc(sizeof(list_t));
+      n_l->data = nn_oo;
+      n_l->prev = NULL;
+      n_l->next = tree_head->child_list;
+      if (tree_head->child_list)
+        tree_head->child_list->prev = n_l;
+      tree_head->child_list = n_l;
+      tree_head = nn_oo;
     }
   }
 
