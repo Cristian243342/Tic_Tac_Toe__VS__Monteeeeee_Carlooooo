@@ -298,6 +298,11 @@ void free_tree(mc_node_t *node) {
 }
 
 int main(void) {
+
+  system("clear");
+  printf("Let's play Tic Tac Toe!\n\n");
+  printf("What do you want to play as? ");
+
   // Uses current time a seed for the rand() function
   srand(time(NULL));
 
@@ -308,13 +313,33 @@ int main(void) {
     tree_head->image[i] = calloc(3, sizeof(int8_t));
 
   int8_t start_turn, line, col, rez;
-  scanf("%hhd", &start_turn);  // 1-player ; -1-ai
+  char player_symbol;
 
+
+  
+
+  do {
+    scanf("%c", &player_symbol); getchar();
+    if (player_symbol == 'X') {
+      start_turn = 1;
+    } else {
+        if (player_symbol == 'O')
+          start_turn = -1;
+        else
+          printf("Please choose X or O.\n");
+    }
+  } while (player_symbol != 'X' && player_symbol != 'O');
+  printf("\n");
+
+  //scanf("%hhd", &start_turn);  // 1-player ; -1-ai
+  printf("Choose the position for %c:\n", player_symbol);
+  printf("For example, \"0 0\" is the upper-left corner and\n"
+    "\"2 2\" is the bottom-right corner.\n");
   if (start_turn == 1) {
     do {
       scanf("%hhd%hhd", &line, &col);
       if (line > 2 || line < 0 || col > 2 || col < 0) {
-        puts("Invalid position.");
+        puts("Invalid position. Please try again. (1)");
         continue;
       }
       tree_head->image[line][col] = 1;  // 1->X; 0->empty; -1->0
@@ -402,21 +427,38 @@ int main(void) {
     tree_head = curr->data;
     // Print the new move;
     for (int8_t i = 0; i < 3; i++) {
-      for (int8_t j = 0; j < 3; j++) printf("%hhd ", tree_head->image[i][j]);
-      puts("");
+      for (int8_t j = 0; j < 3; j++) {
+        switch(tree_head->image[i][j]) {
+        case 1: {
+        printf("%2c", 'X');
+        break;
+        }
+        case -1: {
+            printf("%2c", 'O');
+            break;
+        }
+        default: {
+            printf("%2c", '-');
+            break;
+        }
+        }
+        // printf("%hhd ", tree_head->image[i][j]);
+      }
+      printf("\n");
     }
-
+    printf("\n");
+  
     if (game_is_over(tree_head->image) != 2) break;
 
     // The player makes his move
     while (1) {
-      scanf("%hhd%hhd", &line, &col);
+      scanf("%hhd %hhd", &line, &col);
       if (line > 2 || line < 0 || col > 2 || col < 0) {
-        puts("Invalid position.");
+        puts("Invalid position. Please try again. (2)");
         continue;
       }
       if (tree_head->image[line][col] != 0) {
-        puts("Invalid position.");
+        puts("Invalid position. Please try again. (3)");
         continue;
       }
       tree_head->image[line][col] = start_turn;
@@ -465,7 +507,32 @@ int main(void) {
     }
   }
 
-  printf("Game was won by: %hhd\n", game_is_over(tree_head->image));
+  switch(game_is_over(tree_head->image)) {
+  case 1: {
+    if (player_symbol == 'X')
+      printf("You won! Congratulations! (ez strategy, right?)\n");
+    else
+      printf("AI won! Better LUCK next time (try decreasing the depth :) )\n");
+    break;
+  }
+  case -1: {
+    if (player_symbol == 'X')
+      printf("AI won! Better LUCK next time (try decreasing the depth :) )\n");
+    else
+      printf("You won! Congratulations! (ez strategy, right?)\n");
+    break;
+  }
+  case 0: {
+    printf("It's a draw! Most likely to happen, I guess...?\n");
+    break;
+  }
+  default: {
+    printf("Failed to determine winner. Check the code...\n");
+    break;
+  }
+  }
+
+  //printf("Game was won by: %hhd\n", game_is_over(tree_head->image));
   free_tree(true_head);
   return 0;
 }
