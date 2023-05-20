@@ -8,8 +8,9 @@
 
 #include "struct.h"
 
-#define SIMS_DEPTH 3000
+#define SIMS_DEPTH 100
 #define C sqrt(2)
+#define MAX_STR 128
 
 // Returns -1 is 0 wins, 0 if it's a tie, 1 if X wins, or 2 if the game isn't
 // over
@@ -278,28 +279,39 @@ void free_tree(mc_node_t *node) {
   if (child)
     for (; child->next; child = child->next) {
       free_tree(child->data);
+      child->data = NULL;
       if (child->prev) {
         free(child->prev);
+        child->prev = NULL;
       }
     }
 
   if (child) {
     if (child->prev) {
       free(child->prev);
+      child->prev = NULL;
     }
     free_tree(child->data);
+    child->data = NULL;
     free(child);
+    child = NULL;
   }
 
   int i = 0;
-  for (; i < 3; i++) free(node->image[i]);
+  for (; i < 3; i++) {
+    free(node->image[i]);
+    node->image[i] = NULL;
+  }
   free(node->image);
+  node->image = NULL;
   free(node);
+  node = NULL;
 }
 
 int main(void) {
 
-  system("clear");
+  system("clear");  // Clean console (Linux)
+
   printf("Let's play Tic Tac Toe!\n\n");
   printf("What do you want to play as? ");
 
@@ -313,13 +325,16 @@ int main(void) {
     tree_head->image[i] = calloc(3, sizeof(int8_t));
 
   int8_t start_turn, line, col, rez;
+
+  // Read the player symbol from STDIN
   char player_symbol;
-
-
-  
-
+  char lime[MAX_STR]; // will be used to read a line, where is necessary
   do {
-    scanf("%c", &player_symbol); getchar();
+    scanf("%[^\n]", lime); getchar();
+    if (sscanf(lime, "%c", &player_symbol) != 1) {
+      puts("Invalid position. Please try again. (1)");
+      continue;
+    }
     if (player_symbol == 'X') {
       start_turn = 1;
     } else {
@@ -331,15 +346,20 @@ int main(void) {
   } while (player_symbol != 'X' && player_symbol != 'O');
   printf("\n");
 
-  //scanf("%hhd", &start_turn);  // 1-player ; -1-ai
-  printf("Choose the position for %c:\n", player_symbol);
+  printf("Choose the position for %c:\n", player_symbol); // 1-player, 1-ai
   printf("For example, \"0 0\" is the upper-left corner and\n"
     "\"2 2\" is the bottom-right corner.\n");
+
+  // If the player is the first to start the game
   if (start_turn == 1) {
     do {
-      scanf("%hhd%hhd", &line, &col);
-      if (line > 2 || line < 0 || col > 2 || col < 0) {
+      scanf("%[^\n]", lime); getchar();
+      if (sscanf(lime, "%hhd%hhd", &line, &col) != 2) {
         puts("Invalid position. Please try again. (1)");
+        continue;
+      }
+      if (line > 2 || line < 0 || col > 2 || col < 0) {
+        puts("Invalid position. Please try again. (2)");
         continue;
       }
       tree_head->image[line][col] = 1;  // 1->X; 0->empty; -1->0
@@ -390,7 +410,7 @@ int main(void) {
         for (j = 0; j < 3; j++)
           if (!new_node->image[i][j]) new_node->max_children++;
 
-      list_t *n_ll_node = malloc(sizeof(list_t));
+      list_t *n_ll_node; n_ll_node = malloc(sizeof(list_t));
       // Populates a list_t with the new node and places it at the start of the
       // child list
       n_ll_node->data = new_node;
@@ -425,24 +445,24 @@ int main(void) {
       if (((mc_node_t *)curr->data)->value == max) break;
 
     tree_head = curr->data;
-    // Print the new move;
+
+    // After the new move, the whole table will be printed (again)
     for (int8_t i = 0; i < 3; i++) {
       for (int8_t j = 0; j < 3; j++) {
         switch(tree_head->image[i][j]) {
         case 1: {
-        printf("%2c", 'X');
-        break;
+          printf("%2c", 'X');
+          break;
         }
         case -1: {
-            printf("%2c", 'O');
-            break;
+          printf("%2c", 'O');
+          break;
         }
         default: {
-            printf("%2c", '-');
-            break;
+          printf("%2c", '-');
+          break;
         }
         }
-        // printf("%hhd ", tree_head->image[i][j]);
       }
       printf("\n");
     }
@@ -451,14 +471,18 @@ int main(void) {
     if (game_is_over(tree_head->image) != 2) break;
 
     // The player makes his move
-    while (1) {
-      scanf("%hhd %hhd", &line, &col);
+    do {
+      scanf("%[^\n]", lime); getchar();
+      if (sscanf(lime, "%hhd%hhd", &line, &col) != 2) {
+        puts("Invalid position. Please try again. (3)");
+        continue;
+      }
       if (line > 2 || line < 0 || col > 2 || col < 0) {
-        puts("Invalid position. Please try again. (2)");
+        puts("Invalid position. Please try again. (4)");
         continue;
       }
       if (tree_head->image[line][col] != 0) {
-        puts("Invalid position. Please try again. (3)");
+        puts("Invalid position. Please try again. (5)");
         continue;
       }
       tree_head->image[line][col] = start_turn;
@@ -469,7 +493,8 @@ int main(void) {
       tree_head->parent = NULL;
       tree_head->max_children--;
       break;
-    }
+  
+    } while(1);
 
     // Looking for an existing node for the current table, after the move
     int8_t ver = 0;
@@ -491,22 +516,49 @@ int main(void) {
       if (curr)
         for (; curr->next; curr = curr->next) {
           free_tree(curr->data);
+          curr->data = NULL;
           if (curr->prev) {
             free(curr->prev);
+            curr->prev = NULL;
           }
         }
 
       if (curr) {
         if (curr->prev) {
           free(curr->prev);
+          curr->prev = NULL;
         }
         free_tree(curr->data);
+        curr->data = NULL;
         free(curr);
+        curr = NULL;
       }
       tree_head->child_list = NULL;
     }
   }
 
+  // After the last move, print the board one more time
+  for (int8_t i = 0; i < 3; i++) {
+      for (int8_t j = 0; j < 3; j++) {
+        switch(tree_head->image[i][j]) {
+        case 1: {
+          printf("%2c", 'X');
+          break;
+        }
+        case -1: {
+          printf("%2c", 'O');
+          break;
+        }
+        default: {
+          printf("%2c", '-');
+          break;
+        }
+        }
+      }
+      printf("\n");
+    }
+    printf("\n");
+  
   switch(game_is_over(tree_head->image)) {
   case 1: {
     if (player_symbol == 'X')
@@ -532,7 +584,6 @@ int main(void) {
   }
   }
 
-  //printf("Game was won by: %hhd\n", game_is_over(tree_head->image));
   free_tree(true_head);
   return 0;
 }
