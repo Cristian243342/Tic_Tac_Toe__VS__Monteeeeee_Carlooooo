@@ -101,7 +101,6 @@ mc_node_t *next_expansion(mc_node_t *node) {
   }
 
   // Finds a new expansion.
-  // Starts by checking the middle position.
   int8_t nr_tang = 0;
   if (!new_node->image[1][1]) {
     for (i = 0; i < 3; i += 2) {
