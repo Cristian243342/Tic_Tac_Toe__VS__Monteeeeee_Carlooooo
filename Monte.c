@@ -95,9 +95,20 @@ mc_node_t *next_expansion(mc_node_t *node)
 		memcpy(new_node->image[i], node->image[i], 3);
 	}
 
-	uint8_t r = rand() % 9;
 	uint8_t i, j, count_i = 3, count_j;
 
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < 3; j++) {
+			if (new_node->image[i][j] == 0) {
+				new_node->image[i][j] = node->turn;
+				if (game_is_over(new_node->image) != 2)
+					return new_node;
+				new_node->image[i][j] = 0;
+			}
+		}
+	}
+
+	uint8_t r = rand() % 9;
 	for (i = r / 3; count_i; i = (i + 1) % 3, count_i--)
 		for (j = i == r / 3 ? r % 3 : 0, count_j = 3; count_j; j = (j + 1) % 3,
 			 count_j--)
@@ -120,8 +131,27 @@ int8_t simulate(mc_node_t *head, int8_t start_turn)
 	}
 
 	while (game_is_over(table) == 2) {
-		int8_t r = rand() % 9, i, j;
+		int8_t i, j;
+		bool ver = false;
+			for (i = 0; i < 3; i++) {
+				for (j = 0; j < 3; j++) {
+					if (table[i][j] == 0) {
+						table[i][j] = turn;
+						if (game_is_over(table) != 2) {
+							ver = true;
+							break;
+						}
+						table[i][j] = 0;
+					}
+				}
+				if (ver)
+					break;
+			}
+		
+		if (ver)
+			break;
 
+		int8_t r = rand() % 9;
 		for (i = r / 3; i != ((int)(r / 3) + 2) % 3; i = (i + 1) % 3) {
 			for (j = i == r / 3 ? r % 3 : 0; j < 3; j++)
 				if (table[i][j] == 0) {
@@ -148,11 +178,10 @@ int8_t simulate(mc_node_t *head, int8_t start_turn)
 
 	if (game_is_over(table) == -start_turn)
 		turn = 1;
+	else if (game_is_over(table) == start_turn)
+		turn = -2;
 	else
-		if (game_is_over(table) == start_turn)
-			turn = -1;
-		else
-			turn = 0;
+		turn = -1;
 
 	for (int i = 0; i < 3; i++) {
 		free(table[i]);
@@ -206,7 +235,7 @@ int main(void)
 	do {
 		scanf("%[^\n]", lime); getchar();
 		if (sscanf(lime, "%c", &player_symbol) != 1) {
-			puts("Invalid position. Please try again.");
+			puts("Invalid symbol. Please try again.");
 			continue;
 		}
 		if (player_symbol == 'X') {
@@ -389,7 +418,7 @@ int main(void)
 		}
 
 		// If ver is 1, than the node for the current state already exists
-		if (ver) {
+		if (0) {
 			tree_head = curr->data;
 			tree_head->parent = NULL;
 		} else {
