@@ -8,7 +8,7 @@
 
 #include "struct.h"
 
-#define SIMS_DEPTH 4000
+#define SIMS_DEPTH 2000
 #define C sqrt(2)
 #define MAX_STR 20
 
@@ -403,57 +403,36 @@ int main(void)
 			break;
 		} while (1);
 
-		// Looking for an existing node for the current table, after the move
-		int8_t ver = 0;
-		for (curr = tree_head->child_list; curr; curr = curr->next) {
-			ver = 1;
-			for (int8_t i = 0; i < 3; i++)
-				for (int8_t j = 0; j < 3; j++) {
-					mc_node_t *curr_data = (mc_node_t *)curr->data;
-					if (tree_head->image[i][j] != curr_data->image[i][j])
-						ver = 0;
-				}
-			if (ver)
-				break;
+		mc_node_t *player_move_state = malloc(sizeof(mc_node_t));
+		player_move_state->image = malloc(3 * sizeof(int8_t *));
+
+		for (i = 0; i < 3; i++) {
+			player_move_state->image[i] = malloc(3 * sizeof(int8_t));
+			for (j = 0; j < 3; j++)
+				player_move_state->image[i][j] = tree_head->image[i][j];
 		}
 
-		// If ver is 1, than the node for the current state already exists
-		if (0) {
-			tree_head = curr->data;
-			tree_head->parent = NULL;
-		} else {
-			// Otherwise, a new node is created for the new board state, which
-			// will be the head of the new tree.
-			mc_node_t *player_move_state = malloc(sizeof(mc_node_t));
-			player_move_state->image = malloc(3 * sizeof(int8_t *));
+		player_move_state->image[line][col] = start_turn;
+		player_move_state->turn = -start_turn;
+		player_move_state->child_nr = 0;
+		player_move_state->wins = 0;
+		player_move_state->sims = 0;
+		player_move_state->max_children = 9;
+		player_move_state->parent = NULL;
+		player_move_state->child_list = NULL;
+		player_move_state->max_children--;
+		tree_head->child_nr++;
 
-			for (i = 0; i < 3; i++) {
-				player_move_state->image[i] = malloc(3 * sizeof(int8_t));
-				for (j = 0; j < 3; j++)
-					player_move_state->image[i][j] = tree_head->image[i][j];
-			}
+		list_t *n_l = malloc(sizeof(list_t));
+		n_l->data = player_move_state;
+		n_l->prev = NULL;
+		n_l->next = tree_head->child_list;
+		if (tree_head->child_list)
+			tree_head->child_list->prev = n_l;
 
-			player_move_state->image[line][col] = start_turn;
-			player_move_state->turn = -start_turn;
-			player_move_state->child_nr = 0;
-			player_move_state->wins = 0;
-			player_move_state->sims = 0;
-			player_move_state->max_children = 9;
-			player_move_state->parent = NULL;
-			player_move_state->child_list = NULL;
-			player_move_state->max_children--;
-			tree_head->child_nr++;
-
-			list_t *n_l = malloc(sizeof(list_t));
-			n_l->data = player_move_state;
-			n_l->prev = NULL;
-			n_l->next = tree_head->child_list;
-			if (tree_head->child_list)
-				tree_head->child_list->prev = n_l;
-
-			tree_head->child_list = n_l;
-			tree_head = player_move_state;
-		}
+		tree_head->child_list = n_l;
+		tree_head = player_move_state;
+	
 	}
 
 	// After the last move, print the board one more time
