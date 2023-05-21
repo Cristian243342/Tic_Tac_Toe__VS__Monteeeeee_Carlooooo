@@ -8,7 +8,7 @@
 
 #include "struct.h"
 
-#define SIMS_DEPTH 1000
+#define SIMS_DEPTH 1600
 #define C sqrt(2)
 #define MAX_STR 20
 
@@ -41,6 +41,14 @@ int8_t game_is_over(int8_t **table) {
   return 0;
 }
 
+void free_tb(int8_t **table)
+{
+  uint8_t i = 0;
+  for (; i < 3; i++)
+    free(table[i]);
+  free(table);
+}
+
 mc_node_t *next_expansion(mc_node_t *node);
 
 // Determines the maximum selection value.
@@ -48,7 +56,7 @@ double find_max(mc_node_t *node, uint64_t i) {
   if (game_is_over(node->image) != 2) return -10;
   double max, tmp_max;
   if (node->wins == -9 && node->sims == 1)
-	return -10;
+	  return -10;
   node->value = (double)node->wins / node->sims + C * sqrt(log(i) / node->sims);
   max = node->value;
   // Checks if the node can be expanded.
@@ -81,7 +89,7 @@ mc_node_t *next_expansion(mc_node_t *node) {
   // Creates a new node and initialize the correspondent data types
   mc_node_t *new_node = malloc(sizeof(mc_node_t));
 
-  new_node->max_children = 0;
+  new_node->max_children = node->max_children - 1;
   new_node->value = 0;
   new_node->child_list = NULL;
   new_node->child_nr = 0;
@@ -98,12 +106,32 @@ mc_node_t *next_expansion(mc_node_t *node) {
 
   uint8_t i, j, count_i = 3, count_j;
 
+  list_t *curr = node->child_list;
+  mc_node_t *aux;
+  for (; curr; curr = curr->next) {
+    aux = curr->data;
+    for (i = 0; i < 3; i++)
+      for (j = 0; j < 3; j++)
+        if (new_node->image[i][j] == 0 && aux->image[i][j] != 0)
+          new_node->image[i][j] = 3;
+  }
+
+  int8_t **table = calloc(3, sizeof(int8_t *));
+  for (i = 0; i < 3; i++) {
+    table[i] = calloc(3, sizeof(int8_t));
+    memcpy(table[i], node->image[i], 3);
+  }
+
   for (i = 0; i < 3; i++) {
     for (j = 0; j < 3; j++) {
       if (new_node->image[i][j] == 0) {
-        new_node->image[i][j] = node->turn;
-        if (game_is_over(new_node->image) != 2) return new_node;
-        new_node->image[i][j] = 0;
+        table[i][j] = node->turn;
+        if (game_is_over(table) != 2) {
+          free_tb(new_node->image);
+          new_node->image = table;
+          return new_node;
+        }
+        table[i][j] = 0;
       }
     }
   }
@@ -113,6 +141,8 @@ mc_node_t *next_expansion(mc_node_t *node) {
     for (j = i == r / 3 ? r % 3 : 0, count_j = 3; count_j;
          j = (j + 1) % 3, count_j--)
       if (new_node->image[i][j] == 0) {
+        free_tb(new_node->image);
+        new_node->image = table;
         new_node->image[i][j] = node->turn;
         return new_node;
       }
@@ -174,9 +204,12 @@ int8_t simulate(mc_node_t *head, int8_t start_turn) {
     turn *= -1;
   }
 
-  if (game_is_over(table) == -start_turn)
-    turn = 1;
-  else if (first)
+  if (game_is_over(table) == -start_turn) {
+    if (first)
+      turn = 9;
+    else
+      turn = 1;
+  } else if (first)
       turn = -9;
     else
       turn = -1;
@@ -213,7 +246,7 @@ int main(void) {
   // Uses current time as seed for the rand() function
   srand(time(NULL));
 
-  system("clear");  // Clean console (Linux)
+  // system("clear");  // Clean console (Linux)
 
   printf("Let's play Tic Tac Toe!\n\n");
   printf("What do you want to play as? ");
@@ -310,12 +343,7 @@ int main(void) {
       }
       // Creates a new node to expand the tree.
       new_node = next_expansion(node);
-      node->child_nr += 1;
-
-      // Find the maximum number of children the new node can have.
-      for (i = 0; i < 3; i++)
-        for (j = 0; j < 3; j++)
-          if (!new_node->image[i][j]) new_node->max_children++;
+      node->child_nr++;
 
       list_t *n_ll_node = malloc(sizeof(list_t));
       // Populates a list_t with the new node and places it at
@@ -337,9 +365,13 @@ int main(void) {
         new_node->sims += 1;
         new_node->wins += rez;
         if (rez == -9) {
-			new_node->value = -9;
-			rez = -1;
-		}
+			    new_node->value = -9;
+			    rez = -1;
+		    }
+        if (rez == 9) {
+          new_node->value = 9;
+          rez = 1;
+        }
       }
     }
 
@@ -418,7 +450,7 @@ int main(void) {
     player_move_state->child_nr = 0;
     player_move_state->wins = 0;
     player_move_state->sims = 0;
-    player_move_state->max_children = 9;
+    player_move_state->max_children = tree_head->max_children - 1;
     player_move_state->parent = NULL;
     player_move_state->child_list = NULL;
 
