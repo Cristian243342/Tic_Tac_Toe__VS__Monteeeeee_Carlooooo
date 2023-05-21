@@ -6,9 +6,9 @@ OBJ= Monte.o
 OBJ1= sys_monte.o
 EXEC = monte
 
-.PHONY: clean, clean_build, clean_sys
+.PHONY: clean
 
-build: $(DEPS) clean_sys $(EXEC)
+build: $(DEPS) $(EXEC)
 
 $(EXEC): $(OBJ)
 	$(CC) -g -o $@ $^ $(CFLAGS) -lm
@@ -16,19 +16,8 @@ $(EXEC): $(OBJ)
 %.o: %.c
 	$(CC) -g -c -o $@ $< $(CFLAGS) -lm
 
-build_sys: $(DEPS) clean_build sys_$(EXEC)
-
-sys_$(EXEC): $(OBJ1)
-	$(CC) -g -o $(EXEC) $^ $(CFLAGS) -lm
-
 run:
 	./$(EXEC)
 
 clean:
 	rm -f *.o $(EXEC)
-
-clean_sys:
-	rm -f $(OBJ1)
-
-clean_build:
-	rm -f $(OBJ)
