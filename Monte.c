@@ -10,7 +10,7 @@
 #include "struct.h"
 
 #define C sqrt(2)
-#define MAX_STR 20
+#define MAX_STR 64
 
 // Clear console on the start of the game, depending on the OS
 #ifdef _WIN32
@@ -52,12 +52,12 @@ int8_t game_is_over(int8_t **table)
         sum[6] += table[i][1];
         sum[7] += table[i][2];
     }
+
     for (i = 0; i < 8; i++)
-        if (sum[i] == 3) {
+        if (sum[i] == 3)
             return 1;
-        } else if (sum[i] == -3) {
+        else if (sum[i] == -3)
             return -1;
-        }
 
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
@@ -66,6 +66,7 @@ int8_t game_is_over(int8_t **table)
 
     if (ver)
         return 2;
+
     return 0;
 }
 
@@ -77,11 +78,10 @@ void free_tb(int8_t **table)
         free(table[i]);
         table[i] = NULL;
     }
+
     free(table);
     table = NULL;
 }
-
-mc_node_t *next_expansion(mc_node_t *node);
 
 // Determines the maximum selection value.
 double find_max(mc_node_t *node, uint64_t i)
@@ -92,8 +92,8 @@ double find_max(mc_node_t *node, uint64_t i)
     if (node->wins == -9 && node->sims == 1)
         return -10;
 
-    node->value = (double)node->wins / node->sims +
-                 C * sqrt(log(i) / node->sims);
+    node->value = (double)(node->wins / node->sims) +
+                  (double)(C * sqrt(log(i) / node->sims));
 
     double max, tmp_max;
     max = node->value;
@@ -147,7 +147,7 @@ mc_node_t *next_expansion(mc_node_t *node)
     new_node->wins = 0;
     new_node->image = calloc(3, sizeof(int8_t *));
 
-    int i, j;
+    uint8_t i, j;
     for (i = 0; i < 3; i++) {
         new_node->image[i] = calloc(3, sizeof(int8_t));
         memcpy(new_node->image[i], node->image[i], 3);
@@ -318,9 +318,6 @@ int main(void)
 
     clear_console();  // Clean screen
 
-    // system("clear");  // Clean console (Linux)
-    // system("cls");    // Clean console (Windows)
-
     printf("Let's play Tic Tac Toe!\n\n");
     printf("What do you want to play as? ");
     // Allocate the head of the tree
@@ -350,8 +347,8 @@ int main(void)
             else
                 printf("Please choose X or O.\n");
         }
-    } while (player_symbol != 'X' && player_symbol != 'O'
-             && player_symbol != 'x' && player_symbol != 'o');
+    } while (player_symbol != 'X' && player_symbol != 'O' &&
+             player_symbol != 'x' && player_symbol != 'o');
 
     printf("\n");
 
@@ -386,9 +383,9 @@ int main(void)
         break;
     } while (1);
 
-    printf("Choose the position for the next symbol\n");
+    printf("\nChoose the position for the next symbol\n");
     printf("For example, \"0 0\" is the upper-left corner and\n"
-        "\"2 1\" is the bottom-middle position.\n");
+           "\"2 1\" is the bottom-middle position.\n\n");
 
     // If the player is the first to start the game
     if (start_turn == 1) {
@@ -425,7 +422,7 @@ int main(void)
     // Loop until the game is finished
     double max;
     while (game_is_over(tree_head->image) == 2) {
-        printf("\nWait for AI's turn...\n");
+        printf("\nWait...\n\n");
         mc_node_t *node, *new_node;
         max = -10;
         int8_t i, j;
@@ -570,8 +567,9 @@ int main(void)
         prev_head = tree_head;
     }
 
+    printf("\n");
     // After the last move, print the board one more time
-    if (player_symbol == 'X') {
+    if (player_symbol == 'X' || player_symbol == 'x') {
         for (int8_t i = 0; i < 3; i++) {
             for (int8_t j = 0; j < 3; j++)
                 switch (tree_head->image[i][j]) {
