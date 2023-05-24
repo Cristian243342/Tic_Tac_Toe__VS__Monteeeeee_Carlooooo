@@ -25,21 +25,60 @@ The game features a simple 3x3 board, with places that can be taken accordingly 
 
 ## Usage
 
-To start the program, firstly use the command `make` (or any equivalent command for compiling the source code). Upon opening the executable, you can choose what side do you want to play (either `X` or `O`) and what difficulty level you are comfortable with: 1 for easy (*requires little attention*), 2 for medium (*average person*) or hard (*don't expect perfect moves though*).
+Firstly, clone the repository using, for example, the following command in Bash:
+**TODO: Please change the name of the repositooooooooooooooooory.**
+```git clone git@github.com:Cristian243342/Tic_Tac_Toe__VS__Monteeeeee_Carlooooo.git```
+
+Navigate to the folder you've cloned the repository. To start the program, firstly use the command `make` (or any equivalent command for compiling the source code). Upon opening the executable, you can choose what side do you want to play (either `X` or `O`) and what difficulty level you are comfortable with: 1 for easy (*requires little attention*), 2 for medium (*average person*) or hard (*don't expect perfect moves though*).
 
 After each move, a representation of the 3x3 board will be sent to ```STDOUT```. The program is done once we have a winner or if it's a draw.
 
 ---
 &nbsp;
 
-
 ## Implementation
-When searching
-for the best move in a given position, it's
-important to use an efficient search algorithm that can explore the game tree
-as quickly as possible.
+
+The Tic Tac Toe board itself is dynamically allocated in memory and stored as a structure:
+
+``` C
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+typedef struct mc_node_t {
+    int64_t wins, sims;  // wins = no. of wins, sims = no. of simulations
+
+    double value;  // maximum selection value of the node in the tree
+
+    //  -1 for O and 1 for X;
+    int8_t turn, child_nr, max_children; // (???)
+
+    list_t *child_list;  // list of children used for ????
+
+    int8_t **image;  // current state of the board
+
+    struct mc_node_t *parent;  // parent node
+} mc_node_t;
+```
+
+We also use a simply linked list for  TODO TODO TODO TODO TODO
+
+``` C
+typedef struct list_t {
+    void *data;
+    struct list_t *prev;
+    struct list_t *next;
+} list_t;
+```
 
 ## Chess AI Implementation
+
+While Tic Tac Toe is not a necessarily complicated game like Chess, we still need to search for the best move in a given position efficiently for both time and space complexity. In our implementation, we used Monte Carlo algorithm; let's see how it works:
+
+1. For each possible move, simulate multiple random games by making random moves until the game ends.
+
+2. Keep track of the win rate for each move based on the simulated games.
+
+3. Choose the move with the highest win rate as the AI's next move.
+
+By simulating different game scenarios, the AI player can make strategic decisions and improve its chances of winning in the Tic Tac Toe game.
 
 ## Team Composition & Tasks
 
