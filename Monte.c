@@ -342,15 +342,16 @@ int main(void)
             puts("Invalid symbol. Please try again.");
             continue;
         }
-        if (player_symbol == 'X') {
+        if (player_symbol == 'X' || player_symbol == 'x') {
             start_turn = 1;
         } else {
-            if (player_symbol == 'O')
+            if (player_symbol == 'O' || player_symbol == 'o')
                 start_turn = -1;
             else
                 printf("Please choose X or O.\n");
         }
-    } while (player_symbol != 'X' && player_symbol != 'O');
+    } while (player_symbol != 'X' && player_symbol != 'O'
+             && player_symbol != 'x' && player_symbol != 'o');
 
     printf("\n");
 
@@ -385,7 +386,7 @@ int main(void)
         break;
     } while (1);
 
-    printf("Choose the position for %c:\n", player_symbol);
+    printf("Choose the position for the next symbol\n");
     printf("For example, \"0 0\" is the upper-left corner and\n"
         "\"2 1\" is the bottom-middle position.\n");
 
