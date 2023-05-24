@@ -1,4 +1,4 @@
-# Copyright Lazar Cristian-Stefan 314CA 2022-2023
+# Copyright Lazar Cristian-Stefan 314CA, 2022-2023
 CC=gcc
 CFLAGS=-Wall -Wextra -std=c99
 DEPS= struct.h
