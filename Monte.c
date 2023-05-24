@@ -243,6 +243,7 @@ void free_tree(mc_node_t *node)
 		free(node->image[i]);
 		node->image[i] = NULL;
 	}
+
 	free(node->image);
 	node->image = NULL;
 	free(node);
