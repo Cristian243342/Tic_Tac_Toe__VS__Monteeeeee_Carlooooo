@@ -105,14 +105,55 @@ This application was made by two students (*see **copyright** above*), each havi
   * Responsible for documentation, *README.md*;
   * Coding Style, Indentation & Spacing;
 
+---
+&nbsp;
+
 ## Concepts covered from the courses: TODO
+
+From PCLP3 course, we consider we covered the following topics:
+
+* 1st Course - use of ```#define```, ```#ifdef``` and corresponding fields; implementation of Makefile; many memory leaks were found and further corrected using *Valgrind* and *Gdb*; 
+* 2nd Course - (maybe bits operations ?) **TODO**
+* 3rd Course - many operations on pointers; using both stack and heap;
+* 4th Course - dynamically allocated memory throughout the executable (for instance the 3x3 game board or the tree used for Monte Carlo algorithm; we used *malloc()*, *calloc()* and *free()*);
+* 5th Course - use of a generic doubly linked list; *memcpy()* also used in some cases;
+* 6th Course - (optimisations? time/space complexities?) **TODO**
+
+---
+&nbsp;
 
 ## Difficulties encountered: TODO
 
+Whilst making our ideas practical, we had up and downs, happiness and anger depending on the situation of what we had in mind to do. Throughout our journey, we had some hard times, including:
+
+* Having a hard time finding some memory leaks regarding not properly linking nodes in the list;
+
+* It was not easy to free the whole memory at first;
+
+* Related to front-end, we had to find an efficient way to ignore invalid input from STDIN;
+
+
+---
+&nbsp;
+
 ## Examples of project use: TODO
 
-## Feedback & 
+How could we use this project for something/support for another task? Let's see:
 
-## Final words
+1. Education & Learning -- this project can be partially used as a teaching tool for introduction to programming (in C); for instance, the use of some libraries, some basic commands, like: *printf()*, *scanf()* , use of pointers and arithetic operations and much more;
 
-Whether you want to have fun or just check for memory leaks (*trust us, we have done the latter*), ```XOR 0``` is a  wonderful way to get your attention. So, why not give it a try today?
+2. Recreation & Entertainment -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer
+
+3. Open-Source contribution -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one, player vs. player mode, or creating an application related to this game, for instance, *Connect Four (4 in a row)*).
+
+---
+&nbsp;
+
+## Feedback: TODO
+
+---
+&nbsp;
+
+## Final words: REDO
+
+Whether you want to have fun, or read the source code and still have some fun (*what a source code!*), ```XOR 0``` is a wonderful way to get your attention, at least for a while (we think). So, why not give it a try today?
