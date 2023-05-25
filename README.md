@@ -93,24 +93,24 @@ While Tic Tac Toe is not a necessarily complicated game like Chess, we still nee
 
 1. ***Selection***: From the current tree of game states (initially just the root node containing the current game state), the node with the best value is selected for expansion, based on the formula:
 
-    $$value = \frac{no\_wins}{no\_simulations}+C\sqrt{\frac {log(current\_simulation\_no)}{no\_simulations}}$$
+    $$value = \frac{no\_ wins}{no\_ simulations} + C\sqrt{\frac {log(current\_ simulation\_ no)}{no\_ simulations}}$$
 
     where $C$ is a constant chosen empirically as $\sqrt{2}$.
 
     This formula determines the value based on two concepts:
 
-    * *Exploitation*: $\frac{no\_wins}{no\_simulations}$
-    * *Exploration*: $C\sqrt{\frac {log(current\_simulation_no)}{no\_simulations}}$
+    * *Exploitation*: $\frac{no\_ wins}{no\_ simulations}$
+    * *Exploration*: $C\sqrt{\frac {log(current\_ simulation\_ no)}{no\_simulations}}$
 
-2. ***Expansion***: From the selected node, makes a random expansion, which means finding an unexplored child game state of the chosen node and creating a child node for it.
+2. ***Expansion***: From the selected node, a random expansion is made, which means finding an unexplored child game state of the chosen node and creating a child node for it.
 
-3. ***Simulation***: From the expansion, makes a simulation from that game state, with moves being chosen based on  heuristics, but mostly random, and remembers the result of the simulation.
+3. ***Simulation***: From the expansion, a simulation is made from that game state, with moves being chosen based on  heuristics, but mostly random, and remembers the result of the simulation.
 
 4. ***Backpropagation***: Backpropagates the result of the simulation from parent to parent, all the way to the root.
 
 The previous 4-step algorithm is executed repeatedly, with more repetitions resulting in a better move chosen by the AI.
 
-Once the simulations are executed, the algorithm chooses the direct child node of the root with the highest win rate: $\frac{no\_wins}{no\_simulations}$.
+Once the simulations are executed, the algorithm chooses the direct child node of the root with the highest win rate: $\frac{no\_ wins}{no\_ simulations}$.
 
 By simulating different game scenarios, the AI player can make strategic decisions and improve its chances of winning in the Tic Tac Toe game.
 
@@ -129,7 +129,8 @@ This application was made by two students (*see **copyright** above*), each havi
 * Munteanu Eugen:
   * Responsible for ```STDOUT``` (showing the board, printing correspondent messages etc.);
   * Basically having a lot of "frontend" work;
-  * Game tester with multiple cases of having to improve the algorithm;
+  * Game tester with multiple cases and bugs of having to improve the algorithm;
+  &nbsp;
 * Both:
   * Responsible for documentation, *README.md*;
   * Coding Style, Indentation & Spacing;
@@ -141,7 +142,7 @@ This application was made by two students (*see **copyright** above*), each havi
 
 From PCLP3 course, we consider we covered the following topics:
 
-* 1st Course - use of ```#define```, ```#ifdef``` and corresponding fields; implementation of Makefile; many memory leaks were found and further corrected using *Valgrind* and *Gdb*; 
+* 1st Course - use of ```#define```, ```#ifdef``` and corresponding fields; implementation of Makefile; many memory leaks were found and further corrected using *Valgrind* and *Gdb*;
 * 2nd Course - (maybe bits operations ?) **TODO**
 * 3rd Course - many operations on pointers; using both stack and heap;
 * 4th Course - dynamically allocated memory throughout the executable (for instance the 3x3 game board or the tree used for Monte Carlo algorithm; we used *malloc()*, *calloc()* and *free()*);
@@ -151,7 +152,7 @@ From PCLP3 course, we consider we covered the following topics:
 ---
 &nbsp;
 
-## Difficulties encountered: TODO
+## Difficulties encountered
 
 Whilst making our ideas practical, we had up and downs, happiness and anger depending on the situation of what we had in mind to do. Throughout our journey, we had some hard times, including:
 
@@ -161,19 +162,18 @@ Whilst making our ideas practical, we had up and downs, happiness and anger depe
 
 * Related to front-end, we had to find an efficient way to ignore invalid input from STDIN;
 
-
 ---
 &nbsp;
 
-## Examples of project use: TODO
+## Examples of project use
 
 How could we use this project for something/support for another task? Let's see:
 
-1. Education & Learning -- this project can be partially used as a teaching tool for introduction to programming (in C); for instance, the use of some libraries, some basic commands, like: *printf()*, *scanf()* , use of pointers and arithetic operations and much more;
+1. **Education & Learning** -- this project can be partially used as a teaching tool for introduction or another lesson to programming (in C); for instance, the use of some libraries, some basic commands, like: *printf()*, *scanf()* , use of pointers and arithetic operations and much more;
 
-2. Recreation & Entertainment -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer;
+2. **Recreation & Entertainment** -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer;
 
-3. Open-Source contribution -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one, player vs. player mode, or creating an application related to this game, for instance, *Connect Four (4 in a row)*).
+3. **Open-Source contribution** -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one, player vs. player mode, or creating an application related to this game, for instance, *Connect Four (4 in a row)*).
 
 ---
 &nbsp;
@@ -183,6 +183,6 @@ How could we use this project for something/support for another task? Let's see:
 ---
 &nbsp;
 
-## Final words: REDO
+## Final words
 
-Whether you want to have fun, or read the source code and still have some fun (*what a source code!*), ```XOR 0``` is a wonderful way to get your attention, at least for a while (we think). So, why not give it a try today?
+Whether you want to have fun, or read the source code and still have some fun (*what a time to be alive!*), ***XOR 0*** is a wonderful way to get your attention, at least for a while (we think). So, why not give it a try today?
