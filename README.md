@@ -52,7 +52,7 @@ typedef struct mc_node_t {
     int8_t turn;
     // The number of child game states of the node.
     int8_t child_nr;
-    // The maximum number of children the node can have, depending on the board state
+    // The maximum number of children the node can have, depending on the board state.
     int8_t max_children;
     // The list of expansions from the node.
     list_t *child_list;
