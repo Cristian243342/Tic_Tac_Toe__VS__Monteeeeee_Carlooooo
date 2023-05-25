@@ -42,24 +42,32 @@ The Tic Tac Toe board itself is dynamically allocated in memory and stored as a 
 
 ``` C
 typedef struct mc_node_t {
-    // Number of wins.
-    int64_t wins;
-    // Number of simulations.
-    int64_t sims;
-    // Value for selecting the best node for expansion.
-    double value;
-    // Stores who's turn it is in the game states stored by the node.
-    int8_t turn;
-    // The number of child game states of the node.
-    int8_t child_nr;
-    // The maximum number of children the node can have, depending on the board state.
-    int8_t max_children;
-    // The list of expansions from the node.
-    list_t *child_list;
-    // The state of the board stored in the node.
-    int8_t **image;
-    // The parrent node.
-    struct mc_node_t *parent;
+    int64_t wins;  // Number of wins.
+    
+    int64_t sims;  // Number of simulations.
+
+    
+    double value;  // Value for selecting the best node for expansion.
+    
+    int8_t turn;  // Stores whose turn it is in the game states,
+                  // stored by the node (1 for X; -1 for O).
+
+    
+    int8_t child_nr;  // The number of child game states of the node.
+
+    
+    int8_t max_children;  // // The maximum number of children the node can have,
+                          // depending on the board state.
+
+    
+    list_t *child_list;  // // The list of expansions from the node.
+
+    
+    int8_t **image;  //  The state of the board stored in the node
+                     //   (1 -> X; 0 -> empty; -1 -> O).
+   
+    struct mc_node_t *parent;  // The parrent node.
+
 } mc_node_t;
 ```
 
@@ -163,7 +171,7 @@ How could we use this project for something/support for another task? Let's see:
 
 1. Education & Learning -- this project can be partially used as a teaching tool for introduction to programming (in C); for instance, the use of some libraries, some basic commands, like: *printf()*, *scanf()* , use of pointers and arithetic operations and much more;
 
-2. Recreation & Entertainment -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer
+2. Recreation & Entertainment -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer;
 
 3. Open-Source contribution -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one, player vs. player mode, or creating an application related to this game, for instance, *Connect Four (4 in a row)*).
 
