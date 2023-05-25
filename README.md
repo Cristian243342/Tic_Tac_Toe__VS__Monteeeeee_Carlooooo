@@ -130,7 +130,7 @@ This application was made by two students (*see **copyright** above*), each havi
   * Responsible for ```STDOUT``` (showing the board, printing correspondent messages etc.);
   * Basically having a lot of "frontend" work;
   * Game tester with multiple cases and bugs of having to improve the algorithm;
-  &nbsp;
+&nbsp;
 * Both:
   * Responsible for documentation, *README.md*;
   * Coding Style, Indentation & Spacing;
@@ -138,16 +138,14 @@ This application was made by two students (*see **copyright** above*), each havi
 ---
 &nbsp;
 
-## Concepts covered from the courses: TODO
+## Concepts covered from the courses
 
 From PCLP3 course, we consider we covered the following topics:
 
 * 1st Course - use of ```#define```, ```#ifdef``` and corresponding fields; implementation of Makefile; many memory leaks were found and further corrected using *Valgrind* and *Gdb*;
-* 2nd Course - (maybe bits operations ?) **TODO**
 * 3rd Course - many operations on pointers; using both stack and heap;
 * 4th Course - dynamically allocated memory throughout the executable (for instance the 3x3 game board or the tree used for Monte Carlo algorithm; we used *malloc()*, *calloc()* and *free()*);
 * 5th Course - use of a generic doubly linked list; *memcpy()* also used in some cases;
-* 6th Course - (optimisations? time/space complexities?) **TODO**
 
 ---
 &nbsp;
@@ -174,11 +172,6 @@ How could we use this project for something/support for another task? Let's see:
 2. **Recreation & Entertainment** -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer;
 
 3. **Open-Source contribution** -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one, player vs. player mode, or creating an application related to this game, for instance, *Connect Four (4 in a row)*).
-
----
-&nbsp;
-
-## Feedback: TODO
 
 ---
 &nbsp;
