@@ -85,7 +85,7 @@ While Tic Tac Toe is not a necessarily complicated game like Chess, we still nee
 
 1. ***Selection***: From the current tree of game states (initially just the root node containing the current game state), the node with the best value is selected for expansion, based on the formula:
 
-    $$value = \frac{no_wins}{no_simulations}+C\sqrt{\frac {log(current_simulation_no)}{no_simulations}}$$
+    $$value = \frac{no_ wins}{no_ simulations}+C\sqrt{\frac {log(current_simulation_no)}{no_simulations}}$$
 
     where $C$ is a constant chosen empirically as $\sqrt{2}$.
 
