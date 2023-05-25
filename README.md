@@ -18,7 +18,7 @@ The new link is [here](https://github.com/Cristian243342/XOR_0).
 
 **XOR 0** is a command-line based game written in C *(and 2% Makefile)* that implements the classic Tic Tac Toe (Noughts & Crosses) game. It is a simple yet fun game that you, *the user*, are playing against the opponent.
 
-The game features a simple 3x3 board, with places that can be taken accordingly with X or O, according to the standard rules. The environment where the "drawing fight" is happening, *sadly enough*, is the console interface you are currently running the game. The application also features an AI whose"intelligence" is proportional to the difficulty chosen before starting the game.
+The game features a simple 3x3 board, each player filling a square with X or O, according to the standard rules. The environment where the "drawing fight" is happening, *sadly enough*, is the console interface you are currently running the game. The application also features an AI whose "intelligence" is proportional to the difficulty chosen before starting the game.
 
 ---
 &nbsp;
@@ -29,9 +29,9 @@ Firstly, clone the repository using, for example, the following command in Bash:
 
 ```git clone https://github.com/Cristian243342/XOR_0```
 
-Navigate to the folder you've cloned the repository. To start the program, first, use the command `make` (or any equivalent command for compiling the source code). Upon opening the executable, you can choose what side you want to play (either `X` or `O`) and what difficulty level you are comfortable with: ```1``` for easy (*requires little attention*), ```2``` for medium (*average, mostly*) or ```3``` for hard (*don't expect perfect moves though*).
+Navigate to the folder you've cloned the repository. To start the program, first, use the command `make` (or any equivalent command for compiling the source code). Upon opening the executable, you can choose what side you want to play as (either `X` or `O`) and what difficulty level you are comfortable with: ```1``` for easy (*requires little attention*), ```2``` for medium (*just your average player*) or ```3``` for hard (*don't expect perfect moves though*).
 
-After each move, a representation of the 3x3 board will be sent to ```STDOUT```. The program is done once we have a winner or if it's a draw.
+After each move, a representation of the 3x3 board will be printed in ```STDOUT```. The program is done once we have a winner or if it's a draw.
 
 ---
 &nbsp;
@@ -66,20 +66,17 @@ typedef struct mc_node_t {
     int8_t **image;  //  The state of the board stored in the node
                      //   (1 -> X; 0 -> empty; -1 -> O).
    
-    struct mc_node_t *parent;  // The parrent node.
+    struct mc_node_t *parent;  // The parent node.
 
 } mc_node_t;
 ```
 
-We also use a doubly linked list for storing the expansions of the nodes.
+We also use a doubly linked list for storing children for each node.
 
 ``` C
 typedef struct list_t {
-    // Pointer to the data stored.
     void *data;
-    // Pointer to the previous element of the list.
     struct list_t *prev;
-    // Pointer to the next element of the list.
     struct list_t *next;
 } list_t;
 ```
