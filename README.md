@@ -10,7 +10,7 @@ On the first assignment regarding our Chess project, we had [the following link]
 
 Unfortunately, the continuation of the project was not possible, due to limited time and homework/assignments for other classes. Thus, we have decided to create another simple game (with AI) to still create a project corresponding to the second PCLP3 task. We are sorry for any inconvenience caused.
 
-The new link is [here](https://github.com/Cristian243342/Tic_Tac_Toe__VS__Monteeeeee_Carlooooo).
+The new link is [here](https://github.com/Cristian243342/XOR_0).
 
 &nbsp;
 
