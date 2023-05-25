@@ -86,7 +86,7 @@ typedef struct list_t {
 
 ## Tic-Tac-Toe AI Implementation
 
-While Tic Tac Toe is not a necessarily complicated game like Chess, we still need to search for a great move in a given game state efficiently for better time and space complexity. In our implementation, we used the Monte Carlo algorithm; let's see how it works:
+While Tic Tac Toe is not a necessarily complicated game like Chess, we still need to search for a great move for a given game state efficiently for better time and space complexity. In our implementation, we used the Monte Carlo algorithm; let's see how it works:
 
 1. ***Selection***: From the current tree of game states (initially just the root node containing the current game state), the node with the best value is selected for expansion, based on the formula:
 
@@ -101,7 +101,7 @@ While Tic Tac Toe is not a necessarily complicated game like Chess, we still nee
 
 2. ***Expansion***: From the selected node, a random expansion is made, which means finding an unexplored child game state of the chosen node and creating a child node for it.
 
-3. ***Simulation***: From the expansion, a simulation is made from that game state, with moves being chosen based on  heuristics, but mostly random, and remembers the result of the simulation.
+3. ***Simulation***: From the expansion, a simulation is made from that game state, with moves being chosen based on heuristics, but mostly random, and remembers the result of the simulation.
 
 4. ***Backpropagation***: Backpropagates the result of the simulation from parent to parent, all the way to the root.
 
@@ -120,12 +120,12 @@ This application was made by two students (*see **copyright** above*), each havi
 
 * Lazar Cristian-Stefan:
   * Responsible for Tic-Tac-Toe AI Implementation (Monte-Carlo algorithm, data structures etc.);
-  * Basically having a lot of "backend" work;
-  * Fixer of memory leaks and debugging;
+  * Having a lot of "backend" work;
+  * Fixer of memory leaks and bugs;
 &nbsp;
 * Munteanu Eugen:
   * Responsible for ```STDOUT``` (showing the board, printing correspondent messages etc.);
-  * Basically having a lot of "frontend" work;
+  * Having a lot of "frontend" work;
   * Game tester with multiple cases and bugs of having to improve the algorithm;
 &nbsp;
 * Both:
@@ -149,7 +149,7 @@ From PCLP3 course, we consider we covered the following topics:
 
 ## Difficulties encountered
 
-Whilst making our ideas practical, we had up and downs, happiness and anger depending on the situation of what we had in mind to do. Throughout our journey, we had some hard times, including:
+Whilst making our ideas practical, we had ups and downs, different emotions regarding the tasks (*a rollercoaster of bugs and fixes*). Throughout our journey, we had some hard times, including:
 
 * Having a hard time finding some memory leaks regarding not properly linking nodes in the list;
 
@@ -164,15 +164,16 @@ Whilst making our ideas practical, we had up and downs, happiness and anger depe
 
 How could we use this project for something/support for another task? Let's see:
 
-1. **Education & Learning** -- this project can be partially used as a teaching tool for introduction or another lesson to programming (in C); for instance, the use of some libraries, some basic commands, like: *printf()*, *scanf()* , use of pointers and arithetic operations and much more;
+1. **Education & Learning** -- this project can be partially used as a teaching tool for introduction or another lesson to programming (in C); for instance, programming an AI, understanding abstract data structures
+and practical use of ```STDIN```/```STDOUT```.
 
 2. **Recreation & Entertainment** -- the Tic-Tac-Toe project can also be enjoyed as a recreational game. Despite its simplicity, it can be a good time killer;
 
-3. **Open-Source contribution** -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one, player vs. player mode, or creating an application related to this game, for instance, *Connect Four (4 in a row)*).
+3. **Open-Source contribution** -- this application can be (partially) (re)created, being open-source shared on GitHub. Other programmers can make changes and contribute by adding new features or improvements (a better Monte Carlo algorithm or use of another one for AI, player vs. player mode, or creating another app related to this game).
 
 ---
 &nbsp;
 
 ## Final words
 
-Whether you want to have fun, or read the source code and still have some fun (*what a time to be alive!*), ***XOR 0*** is a wonderful way to get your attention, at least for a while (we think). So, why not give it a try today?
+Whether you want to have fun, or read the source code and still have some fun (*what a time to be alive!*), ***XOR 0*** is a wonderful way to get your attention, at least for a while. So, why not give it a try today?
