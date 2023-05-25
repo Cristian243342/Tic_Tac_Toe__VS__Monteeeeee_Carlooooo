@@ -111,6 +111,8 @@ Once the simulations are executed, the algorithm chooses the direct child node o
 
 By simulating different game scenarios, the AI player can make strategic decisions and improve its chances of winning in the Tic Tac Toe game.
 
+For more information regarding Monte Carlo algorithm, [click here](https://towardsdatascience.com/monte-carlo-tree-search-an-introduction-503d8c04e168).
+
 ---
 &nbsp;
 
