@@ -27,9 +27,7 @@ The game features a simple 3x3 board, with places that can be taken accordingly 
 
 Firstly, clone the repository using, for example, the following command in Bash:
 
-**TODO: Please change the name of the repositooooooooooooooooory.**
-
-```git clone git@github.com:Cristian243342/Tic_Tac_Toe__VS__Monteeeeee_Carlooooo.git```
+```git clone https://github.com/Cristian243342/XOR_0```
 
 Navigate to the folder you've cloned the repository. To start the program, first, use the command `make` (or any equivalent command for compiling the source code). Upon opening the executable, you can choose what side you want to play (either `X` or `O`) and what difficulty level you are comfortable with: ```1``` for easy (*requires little attention*), ```2``` for medium (*average, mostly*) or ```3``` for hard (*don't expect perfect moves though*).
 
@@ -43,29 +41,37 @@ After each move, a representation of the 3x3 board will be sent to ```STDOUT```.
 The Tic Tac Toe board itself is dynamically allocated in memory and stored as a structure:
 
 ``` C
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 typedef struct mc_node_t {
-    int64_t wins, sims;  // wins = no. of wins, sims = no. of simulations
-
-    double value;  // maximum selection value of the node in the tree
-
-    //  -1 for O and 1 for X;
-    int8_t turn, child_nr, max_children; // (???)
-
-    list_t *child_list;  // list of children used for ????
-
-    int8_t **image;  // current state of the board
-
-    struct mc_node_t *parent;  // parent node
+    // Number of wins.
+    int64_t wins;
+    // Number of simulations.
+    int64_t sims;
+    // Value for selecting the best node for expansion.
+    double value;
+    // Stores who's turn it is in the game states stored by the node.
+    int8_t turn;
+    // The number of child game states of the node.
+    int8_t child_nr;
+    // The maximum number of children the node can have, depending on the board state
+    int8_t max_children;
+    // The list of expansions from the node.
+    list_t *child_list;
+    // The state of the board stored in the node.
+    int8_t **image;
+    // The parrent node.
+    struct mc_node_t *parent;
 } mc_node_t;
 ```
 
-We also use a simply linked list for TODO TODO TODO TODO TODO
+We also use a doubly linked list for storing the expansions of the nodes.
 
 ``` C
 typedef struct list_t {
+    // Pointer to the data stored.
     void *data;
+    // Pointer to the previous element of the list.
     struct list_t *prev;
+    // Pointer to the next element of the list.
     struct list_t *next;
 } list_t;
 ```
@@ -75,13 +81,28 @@ typedef struct list_t {
 
 ## Tic-Tac-Toe AI Implementation
 
-While Tic Tac Toe is not a necessarily complicated game like Chess, we still need to search for the best move in a given position efficiently for better time and space complexity. In our implementation, we used the Monte Carlo algorithm; let's see how it works:
+While Tic Tac Toe is not a necessarily complicated game like Chess, we still need to search for a great move in a given game state efficiently for better time and space complexity. In our implementation, we used the Monte Carlo algorithm; let's see how it works:
 
-1. For each possible move, simulate multiple random games by making random moves until the game ends.
+1. ***Selection***: From the current tree of game states (initially just the root node containing the current game state), the node with the best value is selected for expansion, based on the formula:
 
-2. Keep track of the win rate for each move based on the simulated games.
+    $$value = \frac{no\_ wins}{no\_ simulations}+C\sqrt{\frac {log(current\_ simulation\_ no)}{no\_ simulations}}$$
 
-3. Choose the move with the highest win rate as the AI's next move.
+    where $C$ is a constant chosen empirically as $\sqrt{2}$.
+
+    This formula determines the value based on two concepts:
+
+    * *Exploitation*: $\frac{no\_ wins}{no\_ simulations}$
+    * *Exploration*: $C\sqrt{\frac {log(current\_ simulation\_ no)}{no\_ simulations}}$
+
+2. ***Expansion***: From the selected node, makes a random expansion, which means finding an unexplored child game state of the chosen node and creating a child node for it.
+
+3. ***Simulation***: From the expansion, makes a simulation from that game state, with moves being chosen based on  heuristics, but mostly random, and remembers the result of the simulation.
+
+4. ***Backpropagation***: Backpropagates the result of the simulation from parent to parent, all the way to the root.
+
+The previous 4-step algorithm is executed repeatedly, with more repetitions resulting in a better move chosen by the AI.
+
+Once the simulations are executed, the algorithm chooses the direct child node of the root with the highest win rate: $\frac{no\_ wins}{no\_ simulations}$.
 
 By simulating different game scenarios, the AI player can make strategic decisions and improve its chances of winning in the Tic Tac Toe game.
 
@@ -93,7 +114,7 @@ By simulating different game scenarios, the AI player can make strategic decisio
 This application was made by two students (*see **copyright** above*), each having multiple tasks regarding this project. The following list is related to each one's work:
 
 * Lazar Cristian-Stefan:
-  * Responsible for Tic-Tac-Toe AI Implementation (Monte-Carlo algorithm, data structures, associating them etc.;
+  * Responsible for Tic-Tac-Toe AI Implementation (Monte-Carlo algorithm, data structures etc.);
   * Basically having a lot of "backend" work;
   * Fixer of memory leaks and debugging;
 &nbsp;

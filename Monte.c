@@ -91,6 +91,9 @@ double find_max(mc_node_t *node, uint64_t i)
 
     if (node->wins == -9 && node->sims == 1)
         return -10;
+    
+    if (node->wins == 9 && node->sims == 1)
+        return -10;
 
     node->value = (double)(node->wins / node->sims) +
                   (double)(C * sqrt(log(i) / node->sims));
@@ -131,7 +134,7 @@ mc_node_t *select_node(mc_node_t *node, double max)
     return NULL;
 }
 
-// Makes an expedition (aka. makes a random move)
+// Makes an expedition (aka. makes a random-ish move).
 mc_node_t *next_expansion(mc_node_t *node)
 {
     // Creates a new node and initialize the correspondent data types
@@ -155,6 +158,7 @@ mc_node_t *next_expansion(mc_node_t *node)
 
     uint8_t count_i = 3, count_j;
 
+    // Temporarely marks all moves that have already been expanded.
     list_t *curr = node->child_list;
     mc_node_t *aux;
     for (; curr; curr = curr->next) {
@@ -171,6 +175,10 @@ mc_node_t *next_expansion(mc_node_t *node)
         memcpy(table[i], node->image[i], 3);
     }
 
+    /**
+     * Heuristic: Checks if there is an imediate winning game state to which to
+     * expand, in which case it chooses that game state to expand to.
+    */
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
             if (new_node->image[i][j] == 0) {
@@ -183,6 +191,7 @@ mc_node_t *next_expansion(mc_node_t *node)
                 table[i][j] = 0;
             }
 
+    // Otherwise, chooses a random game state for the expansion.
     uint8_t r = rand() % 9;
     for (i = r / 3; count_i; i = (i + 1) % 3, count_i--)
         for (j = i == r / 3 ? r % 3 : 0, count_j = 3; count_j;
@@ -197,7 +206,7 @@ mc_node_t *next_expansion(mc_node_t *node)
     return NULL;
 }
 
-// Simulates a Tic Tac Toe game
+// Simulates a Tic Tac Toe game.
 int8_t simulate(mc_node_t *head, int8_t start_turn)
 {
     int8_t **table = calloc(3, sizeof(int8_t *)), turn = head->turn;
@@ -207,6 +216,15 @@ int8_t simulate(mc_node_t *head, int8_t start_turn)
         memcpy(table[i], head->image[i], 3);
     }
 
+    /**
+     * Heuristic 1: At every level of the simulation, checks if the current game
+     * state has a winning move for the current player, and always chooses that
+     * move instead of a random move.
+     * 
+     * Heuristic 2: If at the first level of the simulation there is a winning
+     * move, the expanded node will be marked as a guaranteed win or guaranteed
+     * lost for the AI.
+     */
     bool first = true;
     while (game_is_over(table) == 2) {
         int8_t i, j;
@@ -231,6 +249,7 @@ int8_t simulate(mc_node_t *head, int8_t start_turn)
 
         first = false;
 
+        // Otherwise, simply chooses a random move.
         int8_t r = rand() % 9;
         for (i = r / 3; i != ((int)(r / 3) + 2) % 3; i = (i + 1) % 3) {
             for (j = i == r / 3 ? r % 3 : 0; j < 3; j++)
@@ -256,6 +275,7 @@ int8_t simulate(mc_node_t *head, int8_t start_turn)
         turn *= -1;
     }
 
+    // Determines the value for the function to return.
     if (game_is_over(table) == -start_turn) {
         if (first)
             turn = 9;
@@ -280,6 +300,7 @@ int8_t simulate(mc_node_t *head, int8_t start_turn)
     return turn;
 }
 
+// Frees the memory allocated for a tree.
 void free_tree(mc_node_t *node)
 {
     list_t *child = node->child_list;
@@ -299,28 +320,22 @@ void free_tree(mc_node_t *node)
         child = NULL;
     }
 
-    int i;
-    for (i = 0; i < 3; i++) {
-        free(node->image[i]);
-        node->image[i] = NULL;
-    }
-
-    free(node->image);
-    node->image = NULL;
+    free_tb(node->image);
     free(node);
     node = NULL;
 }
 
 int main(void)
 {
-    // Uses current time as seed for the rand() function
+    // Uses current time as seed for the rand() function.
     srand(time(NULL));
 
     clear_console();  // Clean screen
 
     printf("Let's play Tic Tac Toe!\n\n");
     printf("What do you want to play as? ");
-    // Allocate the head of the tree
+
+    // Allocates the head of the tree.
     mc_node_t *tree_head = malloc(sizeof(mc_node_t));
     tree_head->image = calloc(3, sizeof(int8_t *));
     for (int8_t i = 0; i < 3; i++)
@@ -328,9 +343,9 @@ int main(void)
 
     int8_t start_turn, line, col, rez;
 
-    // Read the player symbol from STDIN (1 -> X, -1 -> O)
+    // Read the player symbol from STDIN (1 -> X, -1 -> O).
     char player_symbol;
-    char lime[MAX_STR];  // will be used to read a line, where is necessary
+    char lime[MAX_STR];
 
     do {
         scanf("%[^\n]", lime);
@@ -354,6 +369,8 @@ int main(void)
 
     uint32_t sims_depth = 0;
     printf("Choose Dificulty (Easy (1), Medium (2), Hard (3)): ");
+
+    // Sets the difficulty of the game, determined by the number of simulations.
     do {
         scanf("%[^\n]", lime); getchar();
 
@@ -368,11 +385,11 @@ int main(void)
             break;
         }
         case 2: {
-            sims_depth = 300;
+            sims_depth = 600;
             break;
         }
         case 3: {
-            sims_depth = 1500;
+            sims_depth = 2600;
             break;
         }
         default:
@@ -387,7 +404,7 @@ int main(void)
     printf("For example, \"0 0\" is the upper-left corner and\n"
            "\"2 1\" is the bottom-middle position.\n\n");
 
-    // If the player is the first to start the game
+    // If the player has the starting turn, prompts him to make a move.
     if (start_turn == 1) {
         do {
             scanf("%[^\n]", lime);
@@ -400,7 +417,7 @@ int main(void)
                 puts("Invalid position. Please try again.");
                 continue;
             }
-            tree_head->image[line][col] = 1;  // 1->X; 0->empty; -1->0
+            tree_head->image[line][col] = 1;
             break;
         } while (1);
 
@@ -409,17 +426,18 @@ int main(void)
         tree_head->max_children = 9;
     }
 
-    // Initialize tree head.
+    // Initializes the tree head.
     tree_head->value = 0;
     tree_head->child_nr = 0;
     tree_head->wins = 0;
     tree_head->sims = 0;
-    tree_head->turn = -start_turn;  // -1->0; 1->X
+    tree_head->turn = -start_turn;
     tree_head->child_list = NULL;
     tree_head->parent = NULL;
 
     mc_node_t *prev_head = tree_head;
-    // Loop until the game is finished
+
+    // Loop until the game is finished.
     double max;
     while (game_is_over(tree_head->image) == 2) {
         printf("\nWait...\n\n");
@@ -428,20 +446,22 @@ int main(void)
         int8_t i, j;
 
         for (uint32_t t = 2; t < sims_depth + 2; t++) {
-            // Checks if the tree is unpopulated (aka. first move)
+            // Checks if the tree is unpopulated (aka. first move).
             if (!tree_head->child_list) {
-                // Checks if the tree head is a terminal node
-                // if (game_is_over(tree_head->image) != 2) break;
+                // Checks if the tree head is a terminal node.
+                if (game_is_over(tree_head->image) != 2)
+                    break;
                 node = tree_head;
             } else {
-                // Selects the best node from which to expand
+                // Finds the highest value within the tree.
                 max = find_max(tree_head, t);
 
                 // Verifies if there is an expandable node
-                // (aka. if the tree is full)
+                // (aka. if the tree is full).
                 if (max == -10)
                     break;
 
+                // Finds the best node from which to expand.
                 node = select_node(tree_head, max);
             }
             // Creates a new node to expand the tree.
@@ -449,8 +469,8 @@ int main(void)
             node->child_nr++;
 
             list_t *n_ll_node = malloc(sizeof(list_t));
-            // Populates a list_t with the new node and places it at
-            // the start of the child list of its parent
+            // Populates a doubly linked list with the new node and places it at
+            // the start of the child list of its parent.
             n_ll_node->data = new_node;
             n_ll_node->next = node->child_list;
             n_ll_node->prev = NULL;
@@ -460,11 +480,11 @@ int main(void)
             node->child_list = n_ll_node;
 
             // Calculates the result of a random simulation
-            // from this board state
+            // from the board state of the expansion.
             rez = simulate(new_node, start_turn);
 
-            // Backpropagates the result to all the parent nodes,
-            // all the way to the tree head
+            // Backpropagates the result from parent node to parent node,
+            // all the way to the tree head.
             for (; new_node; new_node = new_node->parent) {
                 new_node->sims += 1;
                 new_node->wins += rez;
@@ -480,6 +500,7 @@ int main(void)
         }
 
         // Find the best move
+        // (direct child of the tree root with the highest value).
         list_t *curr = tree_head->child_list;
         max = -10;
         for (; curr; curr = curr->next) {
@@ -496,7 +517,7 @@ int main(void)
 
         tree_head = curr->data;
 
-        // After the new move, the whole table will be printed (again)
+        // After the new move, the whole table will be printed (again).
         printf("\n");
         for (int8_t i = 0; i < 3; i++) {
             for (int8_t j = 0; j < 3; j++) {
@@ -522,7 +543,7 @@ int main(void)
         if (game_is_over(tree_head->image) != 2)
             break;
 
-        // The player makes his move
+        // The player makes his move.
         do {
             printf("Your turn: ");
             scanf("%[^\n]", lime);
@@ -568,7 +589,7 @@ int main(void)
     }
 
     printf("\n");
-    // After the last move, print the board one more time
+    // After the last move, print the board one more time.
     if (player_symbol == 'X' || player_symbol == 'x') {
         for (int8_t i = 0; i < 3; i++) {
             for (int8_t j = 0; j < 3; j++)
