@@ -93,14 +93,14 @@ While Tic Tac Toe is not a necessarily complicated game like Chess, we still nee
 
 1. ***Selection***: From the current tree of game states (initially just the root node containing the current game state), the node with the best value is selected for expansion, based on the formula:
 
-    $$value = \frac{no\_ wins}{no\_ simulations} + C\sqrt{\frac {log(current\_ simulation\_ no)}{no\_ simulations}}$$
+    $$value = \frac{no.\ wins}{no.\ simulations} + C\sqrt{\frac {log(current\ simulation\ no)}{no.\ simulations}}$$
 
     where $C$ is a constant chosen empirically as $\sqrt{2}$.
 
     This formula determines the value based on two concepts:
 
-    * *Exploitation*: $\frac{no\_ wins}{no\_ simulations}$
-    * *Exploration*: $C\sqrt{\frac {log(current\_ simulation\_ no)}{no\_simulations}}$
+    * *Exploitation*: $\frac{no.\ wins}{no.\ simulations}$
+    * *Exploration*: $C\sqrt{\frac {log(current\ simulation\ no)}{no.\ simulations}}$
 
 2. ***Expansion***: From the selected node, a random expansion is made, which means finding an unexplored child game state of the chosen node and creating a child node for it.
 
@@ -110,7 +110,7 @@ While Tic Tac Toe is not a necessarily complicated game like Chess, we still nee
 
 The previous 4-step algorithm is executed repeatedly, with more repetitions resulting in a better move chosen by the AI.
 
-Once the simulations are executed, the algorithm chooses the direct child node of the root with the highest win rate: $\frac{no\_ wins}{no\_ simulations}$.
+Once the simulations are executed, the algorithm chooses the direct child node of the root with the highest win rate: $\frac{no.\ wins}{no.\ simulations}$.
 
 By simulating different game scenarios, the AI player can make strategic decisions and improve its chances of winning in the Tic Tac Toe game.
 
