@@ -12,6 +12,10 @@
 #define C sqrt(2)
 #define MAX_STR 64
 
+#define DEPTH_EASY 50
+#define DEPTH_MEDIUM 600
+#define DEPTH_HARD 2600
+
 // Clear console on the start of the game, depending on the OS
 #ifdef _WIN32
     void clear_console(void)
@@ -381,15 +385,15 @@ int main(void)
 
         switch (sims_depth) {
         case 1: {
-            sims_depth = 50;
+            sims_depth = DEPTH_EASY;
             break;
         }
         case 2: {
-            sims_depth = 600;
+            sims_depth = DEPTH_MEDIUM;
             break;
         }
         case 3: {
-            sims_depth = 2600;
+            sims_depth = DEPTH_HARD;
             break;
         }
         default:
